@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,7 @@ import com.jayaprabahar.marsrover.photorenderer.vo.SearchCriteria;
 
 @RestController
 @RequestMapping("api")
+@CrossOrigin
 public class MarsRoverApiRenderingController {
 
 	private MarsRoverApiRenderingService apiRenderingService;
@@ -60,9 +62,9 @@ public class MarsRoverApiRenderingController {
 	 * @param earthDate
 	 * @return
 	 */
-	@GetMapping("{rover}")
+	@GetMapping("/photos")
 	@ResponseBody
-	public List<PhotoVO> renderPhotosInformation(@PathVariable String rover, @RequestParam("camera") Optional<String> camera,
+	public List<PhotoVO> renderPhotosInformation(@RequestParam("rover") String rover, @RequestParam("camera") Optional<String> camera,
 			@RequestParam("sol") Optional<String> sol, @RequestParam("page") Optional<String> page,
 			@RequestParam("earth_date") Optional<String> earthDate) {
 

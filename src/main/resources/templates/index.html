@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NASA Rover Photo Renderer</title>
+<style type="text/css">
+html, body {
+	height: 100%;
+	margin: 0px;
+	padding: 5px;
+}
+
+.container {
+	height: 100%;
+}
+</style>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel='stylesheet' type="text/css" href='https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css' />
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+<script type="text/javascript">
+
+		var apiUrl = 'http://localhost:8080/api';
+		var TableHeader = ['Rover', 'Camera', 'Sol', 'Earth Date', 'Image' ];
+
+		function loadSearchData() {
+			let dropdownRover = $('#rover-dropdown');
+			dropdownRover.empty();
+		
+			dropdownRover.append('<option	 selected="true" disabled>Choose Rover</option>');
+			dropdownRover.prop('selectedIndex', 0);
+
+			let dropdownCamera = $('#camera-dropdown');
+			dropdownCamera.empty();
+		
+			dropdownCamera.append('<option selected="true" disabled>Choose Camera</option>');
+			dropdownCamera.prop('selectedIndex', 0);
+
+			var uniqueCameraList = [];
+			var maxSolList = [];
+			var maxEarthDateList = [];
+
+			// Populate dropdown with list of provinces
+			$.getJSON(apiUrl, function (data) {
+			    $.each(data.rovers, function (index, value) {
+				    dropdownRover.append($('<option></option>').attr('value', this.name).text(this.name));
+				    maxSolList.push(this.max_sol);
+				    maxEarthDateList.push(new Date(this.max_date)); 
+
+				    $.each(this.cameras, function (index, value) {
+					    if (uniqueCameraList[this.name]) {
+					        $(this).remove();
+					      } else {
+						    dropdownCamera.append("<option value=" + this.name + ">" + this.name + "</option>");
+						    uniqueCameraList[this.name] = this.name;
+					      }
+				    });
+			    });
+
+			    $("sol-input").attr({
+			        "max" : Math.max.apply(Math,maxSolList),
+			        "min" : 1
+			     });
+
+			    $("earthDate-input").attr({
+			        "max" : new Date(Math.max.apply(null,maxEarthDateList))
+			     });
+			})
+		}
+	
+		function displayDataTable() {
+			var roverName = $('#rover-dropdown').val();
+			var cameraName = $('#camera-dropdown').val();
+			var solInput = $('#sol-input').val();
+			var earthDate = $('#earthDate-input').val();
+			var apiPhotoUrl = "";
+
+			if(Boolean(roverName)) {
+				apiPhotoUrl = apiUrl.concat("/photos?rover=",roverName);
+			} else {
+				alert("Rover name must be selected");
+				return;
+			}
+
+			if(Boolean(cameraName)) {
+				apiPhotoUrl = apiPhotoUrl.concat("&camera=",cameraName);
+			}
+
+			if(Boolean(solInput)) {
+				apiPhotoUrl = apiPhotoUrl.concat("&sol=",solInput);
+			}
+
+			if(Boolean(earthDate)) {
+				apiPhotoUrl = apiPhotoUrl.concat("&earthDate=",earthDate);
+			}
+			
+			$.ajax({
+				type: "GET",
+				url: apiPhotoUrl,
+				dataType: 'json',
+				destroy: true,
+				
+				success: function (obj, textstatus) {
+			 
+					var dataSet = new Array;
+					if (!('error' in obj)) {
+						$.each(obj, function (index, value) {
+							var tempArray = new Array;
+							for (var o in value) {
+								tempArray.push(value[o]);
+							}
+							dataSet.push(tempArray);
+						})
+						
+						$('#example').DataTable( {
+							'bSort': false,
+							data: dataSet,
+							columns: [
+							{ title: TableHeader[0] },
+							{ title: TableHeader[1] },
+							{ title: TableHeader[2] },
+							{ title: TableHeader[3] },
+							{ title: TableHeader[4] }
+							],
+							columnDefs: [
+								{ targets: 4,
+								  render: function(data) {
+									return '<img style="width:100px;height:100px;" src="'+data+'" >'
+								  }
+								}   
+							]						
+						} );
+					}
+					else {
+						alert(obj.error);
+					}
+				},
+				error: function (obj, textstatus) {
+					alert(obj.msg);
+				}
+			});
+		}
+		
+		$(document).ready(function() {
+			loadSearchData();
+		} );
+	</script>
+</head>
+<body>
+	<div class="container">
+		<h1>Search MARS Rover's Photos</h1>
+		<table width="100%">
+			<tr>
+				<th>Rover</th>
+				<td>
+					<div>
+						<select id="rover-dropdown">
+						</select>
+					</div>
+				</td>
+				<th>Camera</th>
+				<td>
+					<div>
+						<select id="camera-dropdown">
+						</select>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>Sol</th>
+				<td><input id="sol-input" type="number"></td>
+				<th>Earth Date</th>
+				<td><input id="earthDate-input" type="number"></td>
+			</tr>
+			<tr>
+				<td align="right" colspan="4">
+					<button type="submit" onclick="displayDataTable();">Search</button>
+				</td>
+			</tr>
+		</table>
+		<br />
+		<table id="example" class="display" style="width: 100%"></table>
+	</div>
+</body>
+</html>
