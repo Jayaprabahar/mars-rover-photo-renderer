@@ -9,8 +9,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * <p> Project : marsroverphotorenderer </p>
@@ -25,6 +27,8 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
+@ToString
+@EqualsAndHashCode
 public class Photo implements Serializable {
 
 	/**

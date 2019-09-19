@@ -41,6 +41,13 @@ public class LoggingAspect {
 	@Autowired
 	private ApiCallHistoryRepository apiCallHistoryRepository;
 
+	/**
+	 * Performs AOP logics at controller level, means convers full application time taken
+	 *  
+	 * @param joinPoint
+	 * @return
+	 * @throws Throwable
+	 */
 	@Around("execution(* com.jayaprabahar.marsrover.photorenderer.controller..*(..))")
 	public Object profileExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
 		LocalDateTime startTime = LocalDateTime.now();
@@ -50,7 +57,7 @@ public class LoggingAspect {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
 		log.info(apiCallHistoryRepository.save(new ApiCallHistory(RandomStringUtils.randomNumeric(10),
-				request.getRequestURI() + (StringUtils.isNotBlank(request.getQueryString()) ? "/photos?" + request.getQueryString() : ""),
+				request.getRequestURI() + (StringUtils.isNotBlank(request.getQueryString()) ? "?" + request.getQueryString() : ""),
 				startTime.until(LocalDateTime.now(), ChronoUnit.MILLIS), LocalDateTime.now())).toString());
 
 		return result;

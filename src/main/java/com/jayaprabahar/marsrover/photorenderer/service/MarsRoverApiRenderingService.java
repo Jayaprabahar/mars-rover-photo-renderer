@@ -7,9 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.jayaprabahar.marsrover.photorenderer.config.MarsRoverApiProperties;
+import com.jayaprabahar.marsrover.photorenderer.exception.UnreachableHostException;
+import com.jayaprabahar.marsrover.photorenderer.util.ApplicationUtil;
 import com.jayaprabahar.marsrover.photorenderer.vo.Photos;
 import com.jayaprabahar.marsrover.photorenderer.vo.Rovers;
 import com.jayaprabahar.marsrover.photorenderer.vo.SearchCriteria;
@@ -41,16 +45,35 @@ public class MarsRoverApiRenderingService {
 		this.marsRoverApiProperties = marsRoverApiProperties;
 	}
 
+	/**
+	 * Performs api call to get manifest information and returns JSON equivalent of response
+	 * 
+	 * @return Rovers
+	 */
 	public Rovers getManifestInformation() {
-		return restTemplate.getForObject(marsRoverApiProperties.getUrl().concat("?api_key=").concat(marsRoverApiProperties.getKey()), Rovers.class);
+		try {
+			return restTemplate.getForObject(marsRoverApiProperties.getUrl().concat("?api_key=").concat(marsRoverApiProperties.getKey()),
+					Rovers.class);
+		} catch (HttpClientErrorException e) {
+			throw new UnreachableHostException(e);
+		}
 	}
 
+	/**
+	 * Performs api call to get photo information and returns JSON equivalent of response
+	 * 
+	 * @param criteria
+	 * @return Photos
+	 */
 	public Photos getPhotosInformation(SearchCriteria criteria) {
-		return restTemplate.getForObject(
-				marsRoverApiProperties.getUrl()
-						.concat("/{rover}/photos?api_key={apiKey}&camera={camera}&sol={sol}&page={page}&earthDate={earthDate}"),
-				Photos.class, criteria.getRoverName(), marsRoverApiProperties.getKey(), criteria.getCameraName(), criteria.getSol(),
-				criteria.getEarthDate(), criteria.getPage());
+		try {
+			return restTemplate.getForObject(
+					ApplicationUtil.createNasaPhotoRenderAPIURL(marsRoverApiProperties.getUrl(), marsRoverApiProperties.getKey(), criteria),
+					Photos.class, criteria.getRoverName());
+		} catch (HttpClientErrorException e) {
+			throw new UnreachableHostException(e);
+		}
+
 	}
 
 }

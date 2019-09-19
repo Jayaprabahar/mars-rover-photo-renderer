@@ -3,6 +3,8 @@
  */
 package com.jayaprabahar.marsrover.photorenderer.vo;
 
+import java.util.Optional;
+
 import lombok.Value;
 
 /**
@@ -19,9 +21,9 @@ import lombok.Value;
 public class SearchCriteria {
 
 	private String roverName;
-	private String cameraName;
-	private String sol;
-	private String earthDate;
-	private String page;
+	private Optional<String> cameraName;
+	private Optional<String> sol;
+	private Optional<String> earthDate;
+	private Optional<String> page;
 
 }

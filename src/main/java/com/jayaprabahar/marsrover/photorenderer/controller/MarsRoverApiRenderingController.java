@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -45,7 +44,9 @@ public class MarsRoverApiRenderingController {
 	}
 
 	/**
-	 * @return 
+	 * Controller method to render nasa rover's manifest information such as list of rovers, cameras, max-sol and max earth dates
+	 *   
+	 * @return Rovers
 	 * 
 	 */
 	@GetMapping
@@ -55,12 +56,14 @@ public class MarsRoverApiRenderingController {
 	}
 
 	/**
+	 * Controller method for rendering photo information based on search criteria
+	 * 
 	 * @param rover
 	 * @param camera
 	 * @param sol
 	 * @param page
 	 * @param earthDate
-	 * @return
+	 * @return List<PhotoVO>
 	 */
 	@GetMapping("/photos")
 	@ResponseBody
@@ -68,8 +71,7 @@ public class MarsRoverApiRenderingController {
 			@RequestParam("sol") Optional<String> sol, @RequestParam("page") Optional<String> page,
 			@RequestParam("earth_date") Optional<String> earthDate) {
 
-		Photos photos = apiRenderingService
-				.getPhotosInformation(new SearchCriteria(rover, camera.orElse(""), sol.orElse(""), earthDate.orElse(""), page.orElse("")));
+		Photos photos = apiRenderingService.getPhotosInformation(new SearchCriteria(rover, camera, sol, earthDate, page));
 
 		return photos.getPhotos().stream()
 				.map(e -> new PhotoVO(e.getRover().getName(), e.getCamera().getName(), e.getSol(), e.getEarthDate(), e.getImgSrc()))
