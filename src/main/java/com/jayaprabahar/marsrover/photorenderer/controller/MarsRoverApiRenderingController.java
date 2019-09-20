@@ -69,7 +69,7 @@ public class MarsRoverApiRenderingController {
 	@ResponseBody
 	public List<PhotoVO> renderPhotosInformation(@RequestParam("rover") String rover, @RequestParam("camera") Optional<String> camera,
 			@RequestParam("sol") Optional<String> sol, @RequestParam("page") Optional<String> page,
-			@RequestParam("earth_date") Optional<String> earthDate) {
+			@RequestParam("earthDate") Optional<String> earthDate) {
 
 		Photos photos = apiRenderingService.getPhotosInformation(new SearchCriteria(rover, camera, sol, earthDate, page));
 

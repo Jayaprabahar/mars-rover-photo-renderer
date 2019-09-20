@@ -31,13 +31,13 @@ html, body {
 		let dropdownRover = $('#rover-dropdown');
 		dropdownRover.empty();
 
-		dropdownRover.append('<option selected="true" disabled>Choose Rover</option>');
+		dropdownRover.append('<option selected="true" disabled>Select</option>');
 		dropdownRover.prop('selectedIndex', 0);
 
 		let dropdownCamera = $('#camera-dropdown');
 		dropdownCamera.empty();
 
-		dropdownCamera.append('<option selected="true" disabled>Choose Camera</option>');
+		dropdownCamera.append('<option selected="true" value="">Select</option>');
 		dropdownCamera.prop('selectedIndex', 0);
 
 		var uniqueCameraList = [];
@@ -113,7 +113,6 @@ html, body {
 					}
 
 					photoDataTable = $('#myDataTable').DataTable({
-						bSort : false,
 						data : dataSet,
 						columns : [ {
 							title : TableHeader[0]

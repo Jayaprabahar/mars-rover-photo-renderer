@@ -42,7 +42,7 @@ public class ApplicationUtil {
 
 		criteria.getCameraName().ifPresent(e -> uriComponentsBuilder.queryParam("camera", e));
 		criteria.getSol().ifPresent(e -> uriComponentsBuilder.queryParam("sol", e));
-		criteria.getEarthDate().ifPresent(e -> uriComponentsBuilder.queryParam("earthDate", e));
+		criteria.getEarthDate().ifPresent(e -> uriComponentsBuilder.queryParam("earth_date", e));
 		criteria.getPage().ifPresent(e -> uriComponentsBuilder.queryParam("page", e));
 
 		return uriComponentsBuilder.build().toUriString();

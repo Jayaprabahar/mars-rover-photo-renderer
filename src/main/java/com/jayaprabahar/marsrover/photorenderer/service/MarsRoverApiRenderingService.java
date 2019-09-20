@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.jayaprabahar.marsrover.photorenderer.config.MarsRoverApiProperties;
 import com.jayaprabahar.marsrover.photorenderer.exception.UnreachableHostException;
