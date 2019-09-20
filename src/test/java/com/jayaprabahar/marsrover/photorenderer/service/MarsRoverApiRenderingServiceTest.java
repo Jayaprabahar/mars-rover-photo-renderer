@@ -11,8 +11,10 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import java.util.Optional;
 
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +22,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
@@ -47,8 +48,8 @@ import com.jayaprabahar.marsrover.photorenderer.vo.SearchCriteria;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@DirtiesContext
 @TestPropertySource("classpath:application.properties")
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MarsRoverApiRenderingServiceTest {
 
 	@Autowired
@@ -102,8 +103,8 @@ public class MarsRoverApiRenderingServiceTest {
 
 		SearchCriteria criteria = new SearchCriteria("Curiosity", Optional.of("FHAZ"), Optional.of("1000"), Optional.empty(), Optional.empty());
 
-		mockRestServiceServer.expect(requestTo(ApplicationUtil.createNasaPhotoRenderAPIURL(nasaUrl, nasaAccessKey, criteria)))
-				.andExpect(method(HttpMethod.GET)).andRespond(withSuccess(mapper.writeValueAsString(extepctedPhotos), MediaType.APPLICATION_JSON));
+		mockRestServiceServer.expect(requestTo(ApplicationUtil.createNasaPhotoRenderAPIURL(nasaUrl, nasaAccessKey, criteria))).andExpect(method(HttpMethod.GET))
+				.andRespond(withSuccess(mapper.writeValueAsString(extepctedPhotos), MediaType.APPLICATION_JSON));
 
 		this.apiRenderingService.getPhotosInformation(criteria);
 
