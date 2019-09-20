@@ -1,0 +1,6 @@
+marsroverphotorenderer:
+  environment:
+  - ENV_NAME=prod
+  - GELF_HOST/PROMOTHEUS_HOST=<>
+  - nasa.mars-photos.api.key=<>
+  - nasa.mars-photos.api.url=<>
