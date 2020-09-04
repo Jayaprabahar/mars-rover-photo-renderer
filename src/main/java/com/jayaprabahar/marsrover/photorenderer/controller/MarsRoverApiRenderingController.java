@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jayaprabahar.marsrover.photorenderer.service.MarsRoverApiRenderingService;
@@ -50,7 +49,6 @@ public class MarsRoverApiRenderingController {
 	 * 
 	 */
 	@GetMapping
-	@ResponseBody
 	public Rovers renderManiFestInformation() {
 		return apiRenderingService.getManifestInformation();
 	}
@@ -66,15 +64,12 @@ public class MarsRoverApiRenderingController {
 	 * @return List<PhotoVO>
 	 */
 	@GetMapping("/photos")
-	@ResponseBody
-	public List<PhotoVO> renderPhotosInformation(@RequestParam("rover") String rover, @RequestParam("camera") Optional<String> camera,
-			@RequestParam("sol") Optional<String> sol, @RequestParam("page") Optional<String> page,
-			@RequestParam("earthDate") Optional<String> earthDate) {
+	public List<PhotoVO> renderPhotosInformation(@RequestParam("rover") String rover, @RequestParam("camera") Optional<String> camera, @RequestParam("sol") Optional<String> sol,
+	        @RequestParam("page") Optional<String> page, @RequestParam("earthDate") Optional<String> earthDate) {
 
 		Photos photos = apiRenderingService.getPhotosInformation(new SearchCriteria(rover, camera, sol, earthDate, page));
 
-		return photos.getPhotos().stream()
-				.map(e -> new PhotoVO(e.getRover().getName(), e.getCamera().getName(), e.getSol(), e.getEarthDate(), e.getImgSrc()))
-				.collect(Collectors.toList());
+		return photos.getPhotos().stream().map(e -> new PhotoVO(e.getRover().getName(), e.getCamera().getName(), e.getSol(), e.getEarthDate(), e.getImgSrc()))
+		        .collect(Collectors.toList());
 	}
 }

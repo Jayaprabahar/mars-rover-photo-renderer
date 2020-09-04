@@ -51,10 +51,9 @@ public class MarsRoverApiRenderingService {
 	 */
 	public Rovers getManifestInformation() {
 		try {
-			return restTemplate.getForObject(marsRoverApiProperties.getUrl().concat("?api_key=").concat(marsRoverApiProperties.getKey()),
-					Rovers.class);
-		} catch (HttpClientErrorException e) {
-			throw new UnreachableHostException(e);
+			return restTemplate.getForObject(marsRoverApiProperties.getUrl().concat("?api_key=").concat(marsRoverApiProperties.getKey()), Rovers.class);
+		} catch (Exception e) {
+			throw new UnreachableHostException();
 		}
 	}
 
@@ -66,11 +65,10 @@ public class MarsRoverApiRenderingService {
 	 */
 	public Photos getPhotosInformation(SearchCriteria criteria) {
 		try {
-			return restTemplate.getForObject(
-					ApplicationUtil.createNasaPhotoRenderAPIURL(marsRoverApiProperties.getUrl(), marsRoverApiProperties.getKey(), criteria),
-					Photos.class, criteria.getRoverName());
+			return restTemplate.getForObject(ApplicationUtil.createNasaPhotoRenderAPIURL(marsRoverApiProperties.getUrl(), marsRoverApiProperties.getKey(), criteria), Photos.class,
+			        criteria.getRoverName());
 		} catch (HttpClientErrorException e) {
-			throw new UnreachableHostException(e);
+			throw new UnreachableHostException();
 		}
 
 	}

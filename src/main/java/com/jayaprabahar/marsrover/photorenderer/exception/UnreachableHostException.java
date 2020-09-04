@@ -3,8 +3,6 @@
  */
 package com.jayaprabahar.marsrover.photorenderer.exception;
 
-import org.springframework.web.client.HttpClientErrorException;
-
 /**
  * <p> Project : marsroverphotorenderer </p>
  * <p> Title : UnreachableHostException.java </p>
@@ -25,8 +23,8 @@ public class UnreachableHostException extends RuntimeException {
 	/**
 	 * @param e
 	 */
-	public UnreachableHostException(HttpClientErrorException e) {
-		super("Connection to the NASA API is lost", e);
+	public UnreachableHostException() {
+		super("Connection to the NASA API is lost");
 	}
 
 }
